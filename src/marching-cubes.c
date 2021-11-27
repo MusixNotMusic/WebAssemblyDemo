@@ -316,49 +316,49 @@ typedef struct {
   size_t size;
 } Array;
 
-void initArray(Array *a, size_t initialSize) {
-  a->array = malloc(initialSize * sizeof(float));
-  a->used = 0;
-  a->size = initialSize;
-}
+// void initArray(Array *a, size_t initialSize) {
+//   a->array = malloc(initialSize * sizeof(float));
+//   a->used = 0;
+//   a->size = initialSize;
+// }
 
-void insertArray(Array *a, float element) {
-  // a->used is the number of used entries, because a->array[a->used++] updates a->used only *after* the array has been accessed.
-  // Therefore a->used can go up to a->size 
-  if (a->used == a->size) {
-    a->size *= 2;
-    a->array = realloc(a->array, a->size * sizeof(float));
-  }
-  a->array[a->used++] = element;
-}
+// void insertArray(Array *a, float element) {
+//   // a->used is the number of used entries, because a->array[a->used++] updates a->used only *after* the array has been accessed.
+//   // Therefore a->used can go up to a->size 
+//   if (a->used == a->size) {
+//     a->size *= 2;
+//     a->array = realloc(a->array, a->size * sizeof(float));
+//   }
+//   a->array[a->used++] = element;
+// }
 
-void freeArray(Array *a) {
-  free(a->array);
-  a->array = NULL;
-  a->used = a->size = 0;
-}
+// void freeArray(Array *a) {
+//   free(a->array);
+//   a->array = NULL;
+//   a->used = a->size = 0;
+// }
 
-float getVal (float* data, int elevationIndex, int azimuthIndex, int radialIndex, int gates) {
-    int offset = elevationIndex * 360 * gates + azimuthIndex * gates + radialIndex;
-    return data[offset];
-}
+// float getVal (float* data, int elevationIndex, int azimuthIndex, int radialIndex, int gates) {
+//     int offset = elevationIndex * 360 * gates + azimuthIndex * gates + radialIndex;
+//     return data[offset];
+// }
 
-float* polar2Cartesian (float* Elevations, float GateSizeOfReflectivity, int elevationIndex, int azimuthIndex, int radialIndex) {
-    float elevaRadian = Elevations[elevationIndex];
-    float azimuthRadian = azimuthIndex / 180 * PI;
-    float distance = radialIndex * GateSizeOfReflectivity;
+// float* polar2Cartesian (float* Elevations, float GateSizeOfReflectivity, int elevationIndex, int azimuthIndex, int radialIndex) {
+//     float elevaRadian = Elevations[elevationIndex];
+//     float azimuthRadian = azimuthIndex / 180 * PI;
+//     float distance = radialIndex * GateSizeOfReflectivity;
 
-    float y = sin(elevaRadian) * distance;
-    float xz = cos(elevaRadian) * distance;
+//     float y = sin(elevaRadian) * distance;
+//     float xz = cos(elevaRadian) * distance;
 
-    float z = sin(azimuthRadian) * xz;
-    float x = cos(azimuthRadian) * xz;
-    float xyz[3];
-    xyz[0] = x;
-    xyz[1] = y;
-    xyz[2] = z;
-    return xyz;
-}
+//     float z = sin(azimuthRadian) * xz;
+//     float x = cos(azimuthRadian) * xz;
+//     float xyz[3];
+//     xyz[0] = x;
+//     xyz[1] = y;
+//     xyz[2] = z;
+//     return xyz;
+// }
 
 int* pointPosMap (int eleIndex, int azIndex, int disIndex) {
     int position[8][3] = {
@@ -378,14 +378,14 @@ float lerp1(float start, float end, float amt) {
   return (1 - amt) * start + amt * end;
 }
 
-float* calcPoints(int** coords, int s, int e, float *values, int sIndex, int eIndex, float isolevel) {
-  int rate = (isolevel - values[sIndex]) / (values[eIndex] - values[sIndex]);
-  float x = lerp1(coords[e][0], coords[s][0], rate);
-  float y = lerp1(coords[e][1], coords[s][1], rate);
-  float z = lerp1(coords[e][2], coords[s][2], rate);
-  float vectex[3] = {x, y, z}; 
-  return vectex;
-}
+// float* calcPoints(int** coords, int s, int e, float *values, int sIndex, int eIndex, float isolevel) {
+//   int rate = (isolevel - values[sIndex]) / (values[eIndex] - values[sIndex]);
+//   float x = lerp1(coords[e][0], coords[s][0], rate);
+//   float y = lerp1(coords[e][1], coords[s][1], rate);
+//   float z = lerp1(coords[e][2], coords[s][2], rate);
+//   float vectex[3] = {x, y, z}; 
+//   return vectex;
+// }
 
 /**
  * @brief 
@@ -397,100 +397,100 @@ float* calcPoints(int** coords, int s, int e, float *values, int sIndex, int eIn
  * @param isovalue 等值
  * @return float*  返回等值面 数组
  */
-float* computeIsoSurface (float* data, int elevaLen, int azimuthLen, int gateLen, float* Elevations, float GateSizeOfReflectivity, float isolevel) {
-    int** pointIndex;
-    float vectexVal1;
-    float vectexVal2;
-    float vectexVal3;
-    float vectexVal4;
-    float vectexVal5;
-    float vectexVal6;
-    float vectexVal7;
-    float vectexVal8;
-    float* valueArr = malloc(sizeof(float) * 8);
-    int cubeindex = 0;
+// float* computeIsoSurface (float* data, int elevaLen, int azimuthLen, int gateLen, float* Elevations, float GateSizeOfReflectivity, float isolevel) {
+//     int** pointIndex;
+//     float vectexVal1;
+//     float vectexVal2;
+//     float vectexVal3;
+//     float vectexVal4;
+//     float vectexVal5;
+//     float vectexVal6;
+//     float vectexVal7;
+//     float vectexVal8;
+//     float* valueArr = malloc(sizeof(float) * 8);
+//     int cubeindex = 0;
 
-    float* coords0 = malloc(sizeof(float) * 3);
-    float* coords1 = malloc(sizeof(float) * 3);
-    float* coords2 = malloc(sizeof(float) * 3);
-    float* coords3 = malloc(sizeof(float) * 3);
-    float* coords4 = malloc(sizeof(float) * 3);
-    float* coords5 = malloc(sizeof(float) * 3);
-    float* coords6 = malloc(sizeof(float) * 3);
-    float* coords7 = malloc(sizeof(float) * 3);
+//     float* coords0 = malloc(sizeof(float) * 3);
+//     float* coords1 = malloc(sizeof(float) * 3);
+//     float* coords2 = malloc(sizeof(float) * 3);
+//     float* coords3 = malloc(sizeof(float) * 3);
+//     float* coords4 = malloc(sizeof(float) * 3);
+//     float* coords5 = malloc(sizeof(float) * 3);
+//     float* coords6 = malloc(sizeof(float) * 3);
+//     float* coords7 = malloc(sizeof(float) * 3);
 
-    // float coords[8][3] = malloc(sizeof(float) * 8 * 3);
-    int edgeIndex;
-    int* edgePos;
+//     // float coords[8][3] = malloc(sizeof(float) * 8 * 3);
+//     int edgeIndex;
+//     int* edgePos;
 
-    Array vertArr;
-    initArray(&vertArr, 0);
-    float* vertice;
+//     Array vertArr;
+//     initArray(&vertArr, 0);
+//     float* vertice;
 
-    for (int eleIndex = 0; eleIndex < elevaLen - 1; eleIndex++) {
-        for (int azIndex = 0; azIndex < azimuthLen - 1; azIndex++) {
-            for (int disIndex = 0; disIndex < gateLen - 1; disIndex++) {
-                pointIndex = pointPosMap(eleIndex, azIndex, disIndex);
-                vectexVal1 = getVal(data, pointIndex[0][0], pointIndex[0][1], pointIndex[0][2], gateLen);
-                vectexVal2 = getVal(data, pointIndex[1][0], pointIndex[1][1], pointIndex[1][2], gateLen);
-                vectexVal3 = getVal(data, pointIndex[2][0], pointIndex[2][1], pointIndex[2][2], gateLen);
-                vectexVal4 = getVal(data, pointIndex[3][0], pointIndex[3][1], pointIndex[3][2], gateLen);
-                vectexVal5 = getVal(data, pointIndex[4][0], pointIndex[4][1], pointIndex[4][2], gateLen);
-                vectexVal6 = getVal(data, pointIndex[5][0], pointIndex[5][1], pointIndex[5][2], gateLen);
-                vectexVal7 = getVal(data, pointIndex[6][0], pointIndex[6][1], pointIndex[6][2], gateLen);
-                vectexVal8 = getVal(data, pointIndex[7][0], pointIndex[7][1], pointIndex[7][2], gateLen);
+//     for (int eleIndex = 0; eleIndex < elevaLen - 1; eleIndex++) {
+//         for (int azIndex = 0; azIndex < azimuthLen - 1; azIndex++) {
+//             for (int disIndex = 0; disIndex < gateLen - 1; disIndex++) {
+//                 pointIndex = pointPosMap(eleIndex, azIndex, disIndex);
+//                 vectexVal1 = getVal(data, pointIndex[0][0], pointIndex[0][1], pointIndex[0][2], gateLen);
+//                 vectexVal2 = getVal(data, pointIndex[1][0], pointIndex[1][1], pointIndex[1][2], gateLen);
+//                 vectexVal3 = getVal(data, pointIndex[2][0], pointIndex[2][1], pointIndex[2][2], gateLen);
+//                 vectexVal4 = getVal(data, pointIndex[3][0], pointIndex[3][1], pointIndex[3][2], gateLen);
+//                 vectexVal5 = getVal(data, pointIndex[4][0], pointIndex[4][1], pointIndex[4][2], gateLen);
+//                 vectexVal6 = getVal(data, pointIndex[5][0], pointIndex[5][1], pointIndex[5][2], gateLen);
+//                 vectexVal7 = getVal(data, pointIndex[6][0], pointIndex[6][1], pointIndex[6][2], gateLen);
+//                 vectexVal8 = getVal(data, pointIndex[7][0], pointIndex[7][1], pointIndex[7][2], gateLen);
 
-                valueArr[0] = vectexVal1;
-                valueArr[1] = vectexVal2;
-                valueArr[2] = vectexVal3;
-                valueArr[3] = vectexVal4;
-                valueArr[4] = vectexVal5;
-                valueArr[5] = vectexVal6;
-                valueArr[6] = vectexVal7;
-                valueArr[7] = vectexVal8;
+//                 valueArr[0] = vectexVal1;
+//                 valueArr[1] = vectexVal2;
+//                 valueArr[2] = vectexVal3;
+//                 valueArr[3] = vectexVal4;
+//                 valueArr[4] = vectexVal5;
+//                 valueArr[5] = vectexVal6;
+//                 valueArr[6] = vectexVal7;
+//                 valueArr[7] = vectexVal8;
 
-                cubeindex = 0;
-                if (valueArr[0] < isolevel) cubeindex |= 1;
-                if (valueArr[1] < isolevel) cubeindex |= 2;
-                if (valueArr[2] < isolevel) cubeindex |= 4;
-                if (valueArr[3] < isolevel) cubeindex |= 8;
-                if (valueArr[4] < isolevel) cubeindex |= 16;
-                if (valueArr[5] < isolevel) cubeindex |= 32;
-                if (valueArr[6] < isolevel) cubeindex |= 64;
-                if (valueArr[7] < isolevel) cubeindex |= 128;
+//                 cubeindex = 0;
+//                 if (valueArr[0] < isolevel) cubeindex |= 1;
+//                 if (valueArr[1] < isolevel) cubeindex |= 2;
+//                 if (valueArr[2] < isolevel) cubeindex |= 4;
+//                 if (valueArr[3] < isolevel) cubeindex |= 8;
+//                 if (valueArr[4] < isolevel) cubeindex |= 16;
+//                 if (valueArr[5] < isolevel) cubeindex |= 32;
+//                 if (valueArr[6] < isolevel) cubeindex |= 64;
+//                 if (valueArr[7] < isolevel) cubeindex |= 128;
 
-                if (triTable[cubeindex] && cubeindex != 0) {
-                    coords0 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[0][0], pointIndex[0][1], pointIndex[0][2]);
-                    coords1 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[1][0], pointIndex[1][1], pointIndex[1][2]);
-                    coords2 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[2][0], pointIndex[2][1], pointIndex[2][2]);
-                    coords3 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[3][0], pointIndex[3][1], pointIndex[3][2]);
-                    coords4 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[4][0], pointIndex[4][1], pointIndex[4][2]);
-                    coords5 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[5][0], pointIndex[5][1], pointIndex[5][2]);
-                    coords6 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[6][0], pointIndex[6][1], pointIndex[6][2]);
-                    coords7 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[7][0], pointIndex[7][1], pointIndex[7][2]);
+//                 if (triTable[cubeindex] && cubeindex != 0) {
+//                     coords0 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[0][0], pointIndex[0][1], pointIndex[0][2]);
+//                     coords1 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[1][0], pointIndex[1][1], pointIndex[1][2]);
+//                     coords2 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[2][0], pointIndex[2][1], pointIndex[2][2]);
+//                     coords3 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[3][0], pointIndex[3][1], pointIndex[3][2]);
+//                     coords4 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[4][0], pointIndex[4][1], pointIndex[4][2]);
+//                     coords5 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[5][0], pointIndex[5][1], pointIndex[5][2]);
+//                     coords6 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[6][0], pointIndex[6][1], pointIndex[6][2]);
+//                     coords7 = polar2Cartesian(Elevations, GateSizeOfReflectivity, pointIndex[7][0], pointIndex[7][1], pointIndex[7][2]);
                    
-                    float coords[8][3] = {
-                        { coords0[0],  coords0[1], coords0[2] },
-                        { coords1[0],  coords1[1], coords1[2] },
-                        { coords2[0],  coords2[1], coords2[2] },
-                        { coords3[0],  coords3[1], coords3[2] },
-                        { coords4[0],  coords4[1], coords4[2] },
-                        { coords5[0],  coords5[1], coords5[2] },
-                        { coords6[0],  coords6[1], coords6[2] },
-                        { coords7[0],  coords7[1], coords7[2] },
-                    };
+//                     float coords[8][3] = {
+//                         { coords0[0],  coords0[1], coords0[2] },
+//                         { coords1[0],  coords1[1], coords1[2] },
+//                         { coords2[0],  coords2[1], coords2[2] },
+//                         { coords3[0],  coords3[1], coords3[2] },
+//                         { coords4[0],  coords4[1], coords4[2] },
+//                         { coords5[0],  coords5[1], coords5[2] },
+//                         { coords6[0],  coords6[1], coords6[2] },
+//                         { coords7[0],  coords7[1], coords7[2] },
+//                     };
 
-                    for (int i = 0; i < 16; i++) {
-                        edgeIndex = triTable[cubeindex][i];
-                        edgePos = edgesTable1[edgeIndex];
-                        vertice = calcPoints(coords, edgePos[0], edgePos[1], valueArr, edgePos[2], edgePos[3], isolevel);
-                        insertArray(&vertArr, vertice[0]);
-                        insertArray(&vertArr, vertice[1]);
-                        insertArray(&vertArr, vertice[2]);
-                    }
-                }
-            }
-        }
-    }
-    return vertArr.array;
-}
+//                     for (int i = 0; i < 16; i++) {
+//                         edgeIndex = triTable[cubeindex][i];
+//                         edgePos = edgesTable1[edgeIndex];
+//                         vertice = calcPoints(coords, edgePos[0], edgePos[1], valueArr, edgePos[2], edgePos[3], isolevel);
+//                         insertArray(&vertArr, vertice[0]);
+//                         insertArray(&vertArr, vertice[1]);
+//                         insertArray(&vertArr, vertice[2]);
+//                     }
+//                 }
+//             }
+//         }
+//     }
+//     return vertArr.array;
+// }

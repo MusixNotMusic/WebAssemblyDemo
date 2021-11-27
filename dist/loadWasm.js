@@ -1,12 +1,14 @@
 const imports = {
   env: {
-    // memoryBase: 0,
-    // memory: new WebAssembly.Memory({ initial: 256 })
-    // tableBase: new WebAssembly.Table({ initial: 0, element: 'anyfunc' })
-  }
+    'memory': new WebAssembly.Memory({initial: 256, maximum: 256}),
+    '__memory_base': 0,
+    'tableBase': 0,
+    'table': new WebAssembly.Table({initial: 10, element: 'anyfunc'}),
+    abort:alert
+ }
 };
 
-export function loadWebAssembly (path) {
+function loadWebAssembly (path) {
   return fetch(path)
     .then(response => response.arrayBuffer())
     .then(buffer => WebAssembly.compile(buffer))
@@ -15,16 +17,17 @@ export function loadWebAssembly (path) {
     });
 }
 
-export function loadWebAssembly1 (path, imports = {}) {
+function loadWebAssembly1 (path, imports = {}) {
   return fetch(path)
     .then(response => response.arrayBuffer())
     .then(buffer => WebAssembly.compile(buffer))
     .then(module => {
+      console.log('module', module);
       return WebAssembly.instantiate(module, imports);
     });
 }
 
-export function loadWebAssembly2 (path) {
+function loadWebAssembly2 (path) {
   return WebAssembly.instantiateStreaming(fetch(path), imports);
 }
 

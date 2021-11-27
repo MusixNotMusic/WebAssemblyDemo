@@ -1,0 +1,1 @@
+https://kapadia.github.io/emscripten/2013/09/13/emscripten-pointers-and-pointers.html
